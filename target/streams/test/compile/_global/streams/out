@@ -1,0 +1,9 @@
+[0m[[0m[31merror[0m] [0m[0mC:\Users\DripTooHard\Documents\codeA2\src\test\scala\RFTester.scala:14:3: overloaded method value peek with alternatives:[0m
+[0m[[0m[31merror[0m] [0m[0m  (signal: chisel3.Bundle)scala.collection.mutable.LinkedHashMap[String,BigInt] <and>[0m
+[0m[[0m[31merror[0m] [0m[0m  (signal: chisel3.Aggregate)Seq[BigInt] <and>[0m
+[0m[[0m[31merror[0m] [0m[0m  [T <: chisel3.Element](signal: T)(implicit evidence$12: chisel3.iotesters.Pokeable[T])BigInt <and>[0m
+[0m[[0m[31merror[0m] [0m[0m  (path: String)BigInt[0m
+[0m[[0m[31merror[0m] [0m[0m cannot be applied to (chisel3.UInt, chisel3.UInt)[0m
+[0m[[0m[31merror[0m] [0m[0m  peek(dut.io.writeData,25.U(32.W))[0m
+[0m[[0m[31merror[0m] [0m[0m  ^[0m
+[0m[[0m[31merror[0m] [0m[0mone error found[0m
