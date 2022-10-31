@@ -30,16 +30,16 @@ class CPUTop extends Module {
   //Connecting the modules
   programMemory.io.address := programCounter.io.programCounter
   val instruction = programMemory.io.instructionRead
-  val instruction_Constant = instruction(27,12) //Used in type C, I and D instructions
+  val instruction_Constant = instruction(19,4) //Used in type C, I and D instructions
   //getting control signals
-  controlUnit.io.opcode_function := instruction(3,0)
+  controlUnit.io.opcode_function := instruction(31,28)
   val control_signal = controlUnit.io.control_signal
 
   //*ProgramCounter*
   //Programcounter control signals
   val CU_PCRun = control_signal(11)
-  val CU_PCStop = control_signal(1)
-  val CU_PCJump = control_signal(3,2)
+  val CU_PCStop = control_signal(10)
+  val CU_PCJump = control_signal(9,8)
 
   programCounter.io.run := CU_PCRun //Run
   programCounter.io.stop := CU_PCStop //Stop
@@ -56,8 +56,8 @@ class CPUTop extends Module {
 
   //*ALU*
   //ALU control signals
-  val CU_functionSelect = control_signal(5,4)
-  val CU_ALUInB = control_signal(8,7)
+  val CU_functionSelect = control_signal(7,6)
+  val CU_ALUInB = control_signal(4,3)
 
   alu.io.in_A := registerFile.io.out_A
   alu.io.function_Select := CU_functionSelect //Function select
@@ -72,22 +72,24 @@ class CPUTop extends Module {
 
   //*REG FILE*
   //RegisterFile control signals
-  val CU_RF_WriteEnable = control_signal(6)
-  val CU_RF_Load = control_signal(11)
-  val CU_RF_R0R2 = control_signal(10)
+  val CU_RF_WriteEnable = control_signal(5)
+  val CU_RF_Load = control_signal(0)
+  val CU_RF_R0R2 = control_signal(1)
 
   registerFile.io.writeEnable := CU_RF_WriteEnable//WriteEnable
   registerFile.io.writeData := Mux(CU_RF_WriteEnable === 1.U,dataMemory.io.dataRead,alu.io.ALU_Output) //Load
 
   //Register selection
-  val R0 = instruction(7,4)
+  val R0 = instruction(27,24)
+  val R1 = instruction(23,20)
+  val R2 = instruction(19,16)
   registerFile.io.writeSelect := R0 //R0
-  registerFile.io.sel_A := instruction(11,8) //R1
-  registerFile.io.sel_B := Mux(CU_RF_R0R2 === 1.U,R0,instruction(15,12)) //R0 = R2
+  registerFile.io.sel_A := R1 //R1
+  registerFile.io.sel_B := Mux(CU_RF_R0R2 === 1.U,R0,R2) //R0 = R2
 
   //*Data Memory*
   //Control signals
-  val CU_DM_writeEnable = control_signal(9)
+  val CU_DM_writeEnable = control_signal(2)
 
   dataMemory.io.dataWrite := alu.io.ALU_Output
   dataMemory.io.address := instruction_Constant
