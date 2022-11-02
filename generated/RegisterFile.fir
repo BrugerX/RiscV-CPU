@@ -11,7 +11,7 @@ circuit RegisterFile :
     node _T = and(io.writeEnable, UInt<1>("h01")) @[RegisterFile.scala 25:51]
     node _T_1 = mux(_T, io.writeData, registers[io.writeSelect]) @[RegisterFile.scala 25:35]
     registers[io.writeSelect] <= _T_1 @[RegisterFile.scala 25:29]
-    registers[UInt<1>("h00")] <= UInt<32>("h00") @[RegisterFile.scala 28:18]
-    registers[UInt<1>("h01")] <= UInt<32>("h013") @[RegisterFile.scala 29:18]
-    registers[UInt<2>("h02")] <= UInt<32>("h014") @[RegisterFile.scala 30:18]
+    registers[UInt<4>("h00")] <= UInt<32>("h00") @[RegisterFile.scala 28:23]
+    registers[UInt<4>("h01")] <= UInt<32>("h013") @[RegisterFile.scala 29:23]
+    registers[UInt<4>("h02")] <= UInt<32>("h014") @[RegisterFile.scala 30:23]
     

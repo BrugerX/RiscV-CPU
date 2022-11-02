@@ -25,8 +25,8 @@ class RegisterFile extends Module {
   registers(io.writeSelect) := Mux(io.writeEnable && true.B,io.writeData,registers(io.writeSelect))
 
   //Constants pre-defined in the RF: R0 =0, R1 = 19, R2 = 20
-  registers(0.U) := 0.U(32.W)
-  registers(1.U) := 19.U(32.W)
-  registers(2.U) := 20.U(32.W)
+  registers(0.U(4.W)) := 0.U(32.W)
+  registers(1.U(4.W)) := 19.U(32.W)
+  registers(2.U(4.W)) := 20.U(32.W)
 
 }

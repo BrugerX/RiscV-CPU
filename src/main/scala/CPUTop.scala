@@ -28,6 +28,7 @@ class CPUTop extends Module {
   val alu = Module(new ALU())
 
   //Connecting the modules
+
   programMemory.io.address := programCounter.io.programCounter
   val instruction = programMemory.io.instructionRead
   val instruction_Constant = instruction(19,4) //Used in type C, I and D instructions
@@ -37,7 +38,7 @@ class CPUTop extends Module {
 
   //*ProgramCounter*
   //Programcounter control signals
-  val CU_PCRun = control_signal(11)
+  val CU_PCRun = io.run && Mux(control_signal(11) === 1.U,true.B,false.B)//Otherwise we will start counting too early
   val CU_PCStop = control_signal(10)
   val CU_PCJump = control_signal(9,8)
 
@@ -45,14 +46,14 @@ class CPUTop extends Module {
   programCounter.io.stop := CU_PCStop //Stop
 
   //Branch multiplexer - jump
-  val branchMux = Wire(Vec(3, UInt(1.W)))
+  val branchMux = Wire(Vec(3, Bool()))
   branchMux(0) := false.B
   branchMux(1) := alu.io.ALU_Equal
   branchMux(2) := ~alu.io.ALU_Equal
   programCounter.io.jump := branchMux(CU_PCJump) //Jump
 
   //Jump size
-  programCounter.io.programCounterJump := instruction_Constant
+  programCounter.io.programCounterJump := instruction_Constant - 1.U(16.W)
 
   //*ALU*
   //ALU control signals
@@ -68,7 +69,7 @@ class CPUTop extends Module {
   ALU_in_BMux(1) := 1.U(32.W)
   ALU_in_BMux(2) := 0.U(32.W)
   ALU_in_BMux(3) := instruction_Constant //The ALU sign extends
-  alu.io.in_B := CU_ALUInB //ALU_in_B
+  alu.io.in_B := ALU_in_BMux(CU_ALUInB) //ALU_in_B
 
   //*REG FILE*
   //RegisterFile control signals
@@ -76,8 +77,8 @@ class CPUTop extends Module {
   val CU_RF_Load = control_signal(0)
   val CU_RF_R0R2 = control_signal(1)
 
-  registerFile.io.writeEnable := CU_RF_WriteEnable//WriteEnable
-  registerFile.io.writeData := Mux(CU_RF_WriteEnable === 1.U,dataMemory.io.dataRead,alu.io.ALU_Output) //Load
+  registerFile.io.writeEnable := CU_RF_WriteEnable //WriteEnable
+  registerFile.io.writeData := Mux(CU_RF_Load === 1.U,dataMemory.io.dataRead,alu.io.ALU_Output) //Load
 
   //Register selection
   val R0 = instruction(27,24)
@@ -90,9 +91,11 @@ class CPUTop extends Module {
   //*Data Memory*
   //Control signals
   val CU_DM_writeEnable = control_signal(2)
+  val DM_Adress = alu.io.ALU_Output(15,0)
+  val DM_dataWrite = instruction_Constant
 
-  dataMemory.io.dataWrite := alu.io.ALU_Output
-  dataMemory.io.address := instruction_Constant
+  dataMemory.io.dataWrite := DM_dataWrite
+  dataMemory.io.address := DM_Adress
   dataMemory.io.writeEnable := CU_DM_writeEnable //Write enable
 
   io.done := false.B

@@ -9,10 +9,10 @@ class RFTester(dut: RegisterFile) extends PeekPokeTester(dut) {
   poke(dut.io.sel_B,2.U(4.W))
   peek(dut.io.out_A)
   peek(dut.io.out_B)
-  poke(dut.io.writeEnable,false.B)
-  poke(dut.io.writeSelect,0.U)
-  poke(dut.io.writeData,25.U(32.W))
-  step(1)
+  poke(dut.io.writeEnable,1.U(1.W))
+  poke(dut.io.writeSelect,2.U)
+  poke(dut.io.writeData,0.U(32.W))
+  step(2)
 
 
 

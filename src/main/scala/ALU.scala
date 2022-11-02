@@ -21,6 +21,6 @@ class ALU extends Module {
 
   io.ALU_Output := outputMux(io.function_Select)
 
-  io.ALU_Equal := Mux(outputMux(0) === 0.U,true.B, false.B)
+  io.ALU_Equal := Mux(outputMux(1) === 0.U,true.B, false.B)
 
 }

@@ -6,23 +6,23 @@ import java.util
 class ProgramCounterTester(dut: ProgramCounter) extends PeekPokeTester(dut) {
 
   //Program Counter running for 5 clock cycles
-  poke(dut.io.jump, false)
-  poke(dut.io.run, true)
-  poke(dut.io.stop, false)
+  poke(dut.io.jump, false.B)
+  poke(dut.io.run, true.B)
+  poke(dut.io.stop, false.B)
   poke(dut.io.programCounterJump, 0)
   step(5)
 
   //Hold for 5 clock cycles
-  poke(dut.io.jump, false)
-  poke(dut.io.run, true)
-  poke(dut.io.stop, true)
+  poke(dut.io.jump, false.B)
+  poke(dut.io.run, true.B)
+  poke(dut.io.stop, true.B)
   poke(dut.io.programCounterJump, 0)
   step(5)
 
   //Hold for 5 clock cycles
-  poke(dut.io.jump, false)
-  poke(dut.io.run, false)
-  poke(dut.io.stop, false)
+  poke(dut.io.jump, false.B)
+  poke(dut.io.run, false.B)
+  poke(dut.io.stop, false.B)
   poke(dut.io.programCounterJump, 0)
   step(5)
 

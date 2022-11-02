@@ -11,13 +11,13 @@ class ProgramCounter extends Module {
   })
 
   //Implement this module here (respect the provided interface, since it used by the tester)
-  val reg1 = RegInit(0.U(16.W)) //We can count up to instruction 2^16 > 65k, which is far beyond what we need, using a single register
+  val currentLine = RegInit(0.U(16.W)) //We can count up to instruction 2^16 > 65k, which is far beyond what we need, using a single register
   val run_and_stop = io.run && !(io.stop) //A change in either condition triggers the same reaction
 
   when(run_and_stop === true.B){ //Implicit muxiplexer
-    reg1 := Mux(io.jump === true.B,io.programCounterJump,reg1 + 1.U)
+    currentLine := Mux(io.jump === true.B,io.programCounterJump,currentLine + 1.U(16.W))
   }
 
-  io.programCounter := reg1
+  io.programCounter := currentLine
 
 }
