@@ -1,0 +1,37 @@
+#Constants pre-defined in the RF: R0 =0, R1 = 19, R2 = 20
+1. ADD R3 R0,R0 #R3 = x = 0
+2. ADD R4 R0,R0 #R4 = y = 0
+3. MUL R5 R4,R2 #Input_image[X][Y] = DM(x + y*20) = DM(R3 + 20*R4) 
+4. ADD R5 R5,R3 #^^^
+5. ADDI R6 R5,400 #Output_image[X][Y] = DM(400 + x + y*20)
+#Processerer input pixel
+6. LOAD R7,R5 #Pixel = R7
+7. BNQ R0 R7,10 #If pixel != 0, skip this if statement
+8. SAVE R6,0 #Output_image(x,y) = 0
+9. BNC 29
+10. BEQ R0 R3,15 #x = 0 -> exists no x-1 but we know that x != 19 either, so we branch directly to checking if (x+1) is black.
+11. SUBI R7 R5,1 #R7 = (x-1,y)
+12. LOAD R7,R7 #R7 = InputImage(x-1,y)
+13. BEQ R0 R7,8 #Pixel != 0
+14. BEQ R1 R3,18 # x = 19 -> exists no x + 1
+15. ADDI R7 R5,1 #(x+1,y)
+16. LOAD R7,R7 
+17. BEQ R0 R7,8
+18. BEQ R0 R4,23 # y = 0 -> exists no y -1
+19. SUB R7 R5,R2 #(x,y-1)
+20. LOAD R7,R7
+21. BEQ R0 R7,8
+22. BEQ R0 R4,28 # y = 19 -> exists no y + 1
+23. ADD R7 R5,R2 #(x,y+1) + reusing R8
+24. LOAD R7,R7 
+25. BEQ R0 R7,8
+#If none of the previous BEQ -> output = 0 -> BNC End passed, we have an "automatic" else statement by just continuing
+26. LOAD R7,R5 # R7 = input_image(x,y)
+27. SAVE R6,255 #We know, that if none of the other conditioned passed, that input_im(x,y) = 255 = output_im(x,y)
+28. BEQ R1 R4,31 #y == 19 -> set y = 0 and x += 1
+29. ADDI R4 R4,1
+30. BNC 3 #If y != 20, we increment y and continue
+31. BEQ R1 R3,34 #If x == 19 -> end
+32. ADDI R3 R3,1 #We increment x
+33. BNC 2 #We set y = 0
+34. END
